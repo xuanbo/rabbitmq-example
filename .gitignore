@@ -1,0 +1,10 @@
+# 忽略gradle
+.gradle/
+build/
+
+# 忽略idea配置
+.idea/
+
+# 排除rabbitmq client的入门例子
+src/main/java/example/rabbitmq/helloworld/
+src/test/java/example/rabbitmq/helloworld/
