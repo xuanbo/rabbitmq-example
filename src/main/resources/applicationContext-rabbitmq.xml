@@ -13,6 +13,8 @@
     <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
     <rabbit:admin connection-factory="connectionFactory"/>
 
+
+    <!-- ************************************* direct start ************************************************ -->
     <!--direct 一对一传输-->
     <!--定义rabbit template用于数据的接收和发送 -->
     <rabbit:template exchange="directExchange" id="amqpTemplate" connection-factory="connectionFactory"
@@ -51,4 +53,26 @@
     <rabbit:listener-container connection-factory="connectionFactory">
         <rabbit:listener queues="xuanbo_rabbitmq_helloworld" ref="messageReceiver"/>
     </rabbit:listener-container>
+    <!-- ************************************* direct end ************************************************ -->
+
+
+    <!-- ************************************* topic start ************************************************ -->
+    <!--topic 匹配传输-->
+    <rabbit:template exchange="topicExchange" id="topicTemplate"  connection-factory="connectionFactory"
+                    message-converter="jsonMessageConverter" />
+
+    <!-- 定义queue -->
+    <rabbit:queue name="topicQueue" durable="true" auto-delete="false" exclusive="false" />
+
+    <!-- topic交换器 pattern与topicTemplate.convertAndSend("foo.bar",message);第一个参数匹配 -->
+    <rabbit:topic-exchange name="topicExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="topicQueue" pattern="foo.*" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener ref="topicMessageReceiver" queues="topicQueue"/>
+    </rabbit:listener-container>
+    <!-- ************************************* topic end ************************************************ -->
 </beans>

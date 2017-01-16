@@ -21,11 +21,17 @@ public class MessageProducerImpl implements MessageProducer {
     @Resource
     private AmqpTemplate amqpTemplate;
 
+    @Resource
+    private AmqpTemplate topicTemplate;
+
     @Value("${mq.queueKey}")
     private String queueKey;
 
     public void sendMessage(Object message) {
         log.info("发送消息[{}]", message);
+        // direct
         amqpTemplate.convertAndSend(queueKey, message);
+        // topic
+        topicTemplate.convertAndSend("foo.bar", message);
     }
 }
